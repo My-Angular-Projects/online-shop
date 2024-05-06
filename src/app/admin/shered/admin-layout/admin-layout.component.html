@@ -1,0 +1,29 @@
+<nav class="navbar bg-dark">
+  <h1>
+    <a href="#" routerLink="/">online shop</a>
+  </h1>
+  <ul>
+    <li routerLinkActive="active">
+      <a [routerLink]="['login']" href="#" class="text-capitalize">login</a>
+    </li>
+    <li routerLinkActive="active">
+      <a [routerLink]="['logout']" href="#" class="text-capitalize">logout</a>
+    </li>
+    <li routerLinkActive="active">
+      <a [routerLink]="['dashboard']" href="#" class="text-capitalize">dashboard</a>
+    </li>
+    <li routerLinkActive="active">
+      <a [routerLink]="['add']" href="#" class="text-capitalize">add product</a>
+    </li>
+    <li routerLinkActive="active">
+      <a [routerLink]="['orders']" href="#" class="text-capitalize">orders</a>
+    </li>
+    <li routerLinkActive="active">
+      <a [routerLink]="['product/:id/edit']" href="#" class="text-capitalize">edit</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="container">
+  <router-outlet />
+</div>

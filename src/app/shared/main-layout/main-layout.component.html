@@ -1,2 +1,18 @@
-<p>main-layout works!</p>
+<nav class="navbar bg-dark">
+  <h2 class="text-uppercase">awesome shop</h2>
+  <ul>
+    <li routerLinkActive="active">
+      <a class="text-capitalize" href="#">phone</a>
+    </li>
+    <li routerLinkActive="active">
+      <a class="text-capitalize" href="#">tablet</a>
+    </li>
+    <li routerLinkActive="active">
+      <a class="text-capitalize" href="#">laptop</a>
+    </li>
+    <li routerLinkActive="active">
+      <a [routerLink]="['/cart']" class="text-capitalize" href="#">cart</a>
+    </li>
+  </ul>
+</nav>
 <router-outlet />
