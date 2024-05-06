@@ -8,7 +8,7 @@ import { AddPageComponent } from './add-page/add-page.component';
 import { DashboardPageComponent } from './dashboard-page/dashboard-page.component';
 import { EditPageComponent } from './edit-page/edit-page.component';
 import { OrdersPageComponent } from './orders-page/orders-page.component';
-
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -17,11 +17,8 @@ import { OrdersPageComponent } from './orders-page/orders-page.component';
     AddPageComponent,
     DashboardPageComponent,
     EditPageComponent,
-    OrdersPageComponent
+    OrdersPageComponent,
   ],
-  imports: [
-    CommonModule,
-    AdminRoutingModule
-  ]
+  imports: [CommonModule, AdminRoutingModule, ReactiveFormsModule],
 })
-export class AdminModule { }
+export class AdminModule {}

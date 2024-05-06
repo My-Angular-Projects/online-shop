@@ -1,1 +1,49 @@
-<p>login-page works!</p>
+<form
+  [formGroup]="loginForm"
+  (ngSubmit)="loginFormSubmit()"
+  class="login-form"
+>
+  <h2 class="text-capitalize">login as administrator</h2>
+
+  <div class="form-control">
+    <label class="text-capitalize" for="email">email:</label>
+    <input type="email" name="email" id="email" formControlName="email" />
+
+    @if(emailControl?.touched && emailControl?.invalid) {
+      <div class="validation">
+        @if(emailControl?.errors?.['required']) {
+          <small>Enter email</small>
+        }
+        @if(emailControl?.errors?.['email']) {
+          <small>Enter valid email</small>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="form-control">
+    <label class="text-capitalize" for="password">password:</label>
+    <input type="password" name="password" id="password" formControlName="password" />
+
+    @if(passwordControl?.touched && passwordControl?.invalid) {
+      <div class="validation">
+        @if(passwordControl?.errors?.['required']) {
+          <small>Enter password</small>
+        }
+        @if(passwordControl?.errors?.['minlength']) {
+          <small>
+            Password must be at least {{ passwordControl.errors?.['minlength'].requiredLength }} characters.
+            Now the length is {{ passwordControl.errors?.['minlength'].actualLength }}
+          </small>
+        }
+      </div>
+    }
+  </div>
+
+  <button
+    type="submit"
+    class="btn btn-primary btn-block text-capitalize"
+    [disabled]="loginForm.invalid"
+  >login</button>
+
+</form>
