@@ -8,6 +8,7 @@ import { MainPageComponent } from './shared/main-page/main-page.component';
 import { ProductPageComponent } from './shared/product-page/product-page.component';
 import { CartPageComponent } from './shared/cart-page/cart-page.component';
 import { AdminModule } from './admin/admin.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -17,8 +18,7 @@ import { AdminModule } from './admin/admin.module';
     ProductPageComponent,
     CartPageComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, AdminModule],
-  providers: [],
+  imports: [BrowserModule, AppRoutingModule, AdminModule, HttpClientModule],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

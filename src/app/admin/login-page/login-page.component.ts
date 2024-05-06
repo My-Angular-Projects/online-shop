@@ -1,5 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { IUser } from '../../shared/types';
+import { AuthService } from '../../shared/services';
+import { takeUntil } from 'rxjs';
+import { destroy } from '../../shared/helpers';
 
 @Component({
   selector: 'mg-login-page',
@@ -8,7 +12,11 @@ import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/fo
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginPageComponent implements OnInit {
+  private readonly authService = inject(AuthService);
+  private readonly destroy$ = destroy();
+
   public loginForm!: FormGroup;
+  public isSubmitted = signal<boolean>(false);
 
   public ngOnInit(): void {
     this.loginForm = new FormGroup({
@@ -18,7 +26,10 @@ export class LoginPageComponent implements OnInit {
   }
 
   public loginFormSubmit(): void {
-    //
+    if (this.loginForm.invalid) {
+      return;
+    }
+    this.login();
   }
 
   public get emailControl(): FormControl {
@@ -27,5 +38,24 @@ export class LoginPageComponent implements OnInit {
 
   public get passwordControl(): FormControl {
     return <FormControl<AbstractControl>>this.loginForm.get('password');
+  }
+
+  private login(): void {
+    this.isSubmitted.set(true);
+
+    const { email, password } = this.loginForm.value;
+    const user: IUser = {
+      email,
+      password,
+    };
+
+    this.authService
+      .login(user)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((response: IUser) => {
+        console.log('response >>', response);
+        this.isSubmitted.set(false);
+        this.loginForm.reset();
+      });
   }
 }
