@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IUser } from '../../shared/types';
-import { AuthService } from '../../shared/services';
+// import { AuthService } from '../../shared/services';
 import { Observable, switchMap, takeUntil } from 'rxjs';
 import { destroy } from '../../shared/helpers';
 import { Store } from '@ngxs/store';
@@ -16,7 +16,6 @@ import { AppStateModel } from '../../store/app.state';
 })
 export class LoginPageComponent implements OnInit {
   private readonly store = inject(Store);
-  private readonly authService = inject(AuthService);
   private readonly destroy$ = destroy();
 
   public loginForm!: FormGroup;
@@ -47,21 +46,19 @@ export class LoginPageComponent implements OnInit {
   }
 
   private login(): void {
-    this.store.dispatch(new Auth.Logging());
-
     const { email, password } = this.loginForm.value;
     const user: IUser = {
       email,
       password,
     };
 
-    this.authService
-      .login(user)
+    this.store
+      .dispatch(new Auth.Logging(user))
       .pipe(
         switchMap(() => this.store.dispatch(new Auth.NotLogging())),
         takeUntil(this.destroy$),
       )
-      .subscribe((_) => {
+      .subscribe(() => {
         this.loginForm.reset();
       });
   }

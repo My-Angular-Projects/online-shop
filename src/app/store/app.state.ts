@@ -1,15 +1,20 @@
 import { Action, Selector, State, StateContext, StateToken } from '@ngxs/store';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Auth } from './app.action';
+import { IUser } from '../shared/types';
+import { AuthService } from '../shared/services';
+import { Observable, tap } from 'rxjs';
 
 const APP_STATE_TOKEN = new StateToken<AppStateModel>('app');
 
 export interface AppStateModel {
   isLogging: boolean;
+  user: IUser;
 }
 
 const initialState: AppStateModel = {
   isLogging: false,
+  user: {} as IUser,
 };
 
 @State<AppStateModel>({
@@ -18,12 +23,24 @@ const initialState: AppStateModel = {
 })
 @Injectable()
 export class AppState {
+  private readonly authService = inject(AuthService);
+
   @Action(Auth.Logging)
-  authLogging(ctx: StateContext<AppStateModel>): void {
-    ctx.setState({
-      ...ctx.getState(),
-      isLogging: true,
-    });
+  authLogging(ctx: StateContext<AppStateModel>, action: Auth.Logging): Observable<IUser> {
+    const { user } = action;
+
+    return this.authService.login(user).pipe(
+      tap((user: IUser) => {
+        ctx.setState({
+          ...ctx.getState(),
+          isLogging: true,
+          user: {
+            ...ctx.getState().user,
+            ...user,
+          },
+        });
+      }),
+    );
   }
 
   @Action(Auth.NotLogging)
