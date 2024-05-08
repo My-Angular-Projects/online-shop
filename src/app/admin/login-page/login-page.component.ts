@@ -1,9 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IUser } from '../../shared/types';
 import { AuthService } from '../../shared/services';
-import { takeUntil } from 'rxjs';
+import { Observable, switchMap, takeUntil } from 'rxjs';
 import { destroy } from '../../shared/helpers';
+import { Store } from '@ngxs/store';
+import { Auth } from '../../store/app.action';
+import { AppStateModel } from '../../store/app.state';
 
 @Component({
   selector: 'mg-login-page',
@@ -12,17 +15,20 @@ import { destroy } from '../../shared/helpers';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginPageComponent implements OnInit {
+  private readonly store = inject(Store);
   private readonly authService = inject(AuthService);
   private readonly destroy$ = destroy();
 
   public loginForm!: FormGroup;
-  public isSubmitted = signal<boolean>(false);
+  public isLogging$!: Observable<boolean>;
 
   public ngOnInit(): void {
     this.loginForm = new FormGroup({
       email: new FormControl(null, [Validators.required, Validators.email]),
       password: new FormControl(null, [Validators.required, Validators.minLength(8)]),
     });
+
+    this.isLogging$ = this.store.select((state: AppStateModel) => state.isLogging);
   }
 
   public loginFormSubmit(): void {
@@ -41,7 +47,7 @@ export class LoginPageComponent implements OnInit {
   }
 
   private login(): void {
-    this.isSubmitted.set(true);
+    this.store.dispatch(new Auth.Logging());
 
     const { email, password } = this.loginForm.value;
     const user: IUser = {
@@ -51,10 +57,11 @@ export class LoginPageComponent implements OnInit {
 
     this.authService
       .login(user)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((response: IUser) => {
-        console.log('response >>', response);
-        this.isSubmitted.set(false);
+      .pipe(
+        switchMap(() => this.store.dispatch(new Auth.NotLogging())),
+        takeUntil(this.destroy$),
+      )
+      .subscribe((_) => {
         this.loginForm.reset();
       });
   }

@@ -43,7 +43,7 @@
   <button
     type="submit"
     class="btn btn-primary btn-block text-capitalize"
-    [disabled]="loginForm.invalid || isSubmitted()"
+    [disabled]="loginForm.invalid || (isLogging$ | async)"
   >login</button>
 
 </form>

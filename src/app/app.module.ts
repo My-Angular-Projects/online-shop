@@ -9,6 +9,9 @@ import { ProductPageComponent } from './shared/product-page/product-page.compone
 import { CartPageComponent } from './shared/cart-page/cart-page.component';
 import { AdminModule } from './admin/admin.module';
 import { HttpClientModule } from '@angular/common/http';
+import { NgxsModule } from '@ngxs/store';
+import { AppState } from './store/app.state';
+import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 
 @NgModule({
   declarations: [
@@ -18,7 +21,14 @@ import { HttpClientModule } from '@angular/common/http';
     ProductPageComponent,
     CartPageComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, AdminModule, HttpClientModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    AdminModule,
+    HttpClientModule,
+    NgxsModule.forRoot([AppState]),
+    NgxsReduxDevtoolsPluginModule.forRoot(),
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
